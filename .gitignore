@@ -1,0 +1,25 @@
+## Build
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+*.dll
+*.pdb
+!**/lib/**/*.dll
+
+## Visual Studio / Rider
+.vs/
+.idea/
+*.user
+*.userosscache
+*.suo
+*.cache
+*.vsp
+*.vspx
+
+## Local overrides (game path)
+Directory.Build.user.props
+
+## OS
+Thumbs.db
+Desktop.ini

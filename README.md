@@ -1,6 +1,8 @@
 # Repeat Takeoff Music
 
-BepInEx plugin for **[Nuclear Option](https://store.steampowered.com/app/2168680/Nuclear_Option/)** that lets **per-aircraft takeoff music** play on **every** takeoff in a match, instead of only the first time each aircraft theme is triggered.
+BepInEx plugin for **[Nuclear Option](https://store.steampowered.com/app/2168680/Nuclear_Option/)** that adjusts **per-aircraft takeoff music** for the local player.
+
+Vanilla only plays each aircraft’s takeoff theme **once per match** when that cue first runs. This mod forces **`allowReplay`** once per **local aircraft unit** (`Unit.persistentID`): **land and take off again in the same unit** → theme does **not** restart. **Spawn a new aircraft** (new network id) → you get **one** more takeoff theme for that unit.
 
 **BepInEx plugin GUID:** `com.at747.repeattakeoffmusic`
 
@@ -29,7 +31,7 @@ msbuild RepeatTakeoffMusic\RepeatTakeoffMusic.csproj /p:Configuration=Release
 
 ## How it works
 
-Vanilla code calls `MusicManager.CrossFadeMusic` from `Aircraft.CheckRadarAlt` when the local aircraft becomes airborne, with a middle `bool` set to `false` (one-shot). Pilot death uses `true` for that same parameter. This mod applies a Harmony **Prefix** on `CrossFadeMusic` and, for calls that match the takeoff pattern (non-null clip, second bool `false`, third bool `true`), sets the second bool to `true` so the track can play again.
+Vanilla calls `MusicManager.CrossFadeMusic` from `Aircraft.CheckRadarAlt` with `allowReplay: false` for takeoff. This mod’s **Prefix** sets `allowReplay` to `true` only for the **first** matching `takeoffMusic` call on the current **`persistentID`**. When the local player controls a **different** unit id, the counter resets. `GameManager.SetupGame` resets everything for a new session.
 
 ## Behaviour notes (vanilla)
 
@@ -40,18 +42,18 @@ Vanilla code calls `MusicManager.CrossFadeMusic` from `Aircraft.CheckRadarAlt` w
 
 | Key | Default | Description |
 |-----|---------|-------------|
-| `General.Enabled` | `true` | Set `false` to restore vanilla one-shot takeoff music without removing the plugin. |
+| `General.Enabled` | `true` | Set `false` to disable the mod’s patching (vanilla behaviour). |
 
 ## Manual test checklist
 
-1. **Repeat takeoff:** same aircraft, land then take off again — theme should play each time (gear down).
-2. **Different aircraft:** switch types in one match — each type’s theme should still play when that type takes off.
+1. **Same aircraft, second takeoff:** land, take off again **without** switching planes — takeoff theme should **not** play again.
+2. **New spawn:** after you get a **new** aircraft (new unit id), first takeoff can play the theme again (gear down).
 3. **Death:** confirm death sting / music still behaves normally.
 4. **Multiplayer:** only local `CrossFadeMusic` calls are affected; remote players are unchanged.
 
 ## Compatibility
 
-Patches `MusicManager.CrossFadeMusic(AudioClip, float, float, bool, bool, bool, float)`. Game updates that change this signature will require a mod update.
+Patches `MusicManager.CrossFadeMusic(...)` and `GameManager.SetupGame`. Game updates that change these will require a mod update.
 
 ## License
 
