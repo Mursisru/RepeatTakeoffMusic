@@ -1,25 +1,13 @@
-## Build
-[Bb]in/
-[Oo]bj/
-[Dd]ebug/
-[Rr]elease/
-*.dll
-*.pdb
-!**/lib/**/*.dll
-
-## Visual Studio / Rider
+bin/
+obj/
 .vs/
-.idea/
 *.user
-*.userosscache
-*.suo
-*.cache
-*.vsp
-*.vspx
-
-## Local overrides (game path)
+libs/
+Directory.Build.props
 Directory.Build.user.props
-
-## OS
-Thumbs.db
-Desktop.ini
+.cursorrules
+.cursor/
+ffmpeg.exe
+local_build_scripts/
+_buildroot/
+.debug/

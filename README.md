@@ -1,37 +1,33 @@
-# Repeat Takeoff Music
+**Developer:** Mursisru
 
-BepInEx plugin for **[Nuclear Option](https://store.steampowered.com/app/2168680/Nuclear_Option/)** that adjusts **per-aircraft takeoff music** for the local player.
+# Repeat Takeoff Music (Nuclear Option)
 
-Vanilla only plays each aircraft’s takeoff theme **once per match** when that cue first runs. This mod forces **`allowReplay`** once per **local aircraft unit** (`Unit.persistentID`): **land and take off again in the same unit** → theme does **not** restart. **Spawn a new aircraft** (new network id) → you get **one** more takeoff theme for that unit.
+[![Nuclear Option](https://img.shields.io/badge/Game-Nuclear%20Option-blue)](https://store.steampowered.com/app/2168680/Nuclear_Option/) [![BepInEx 5](https://img.shields.io/badge/Loader-BepInEx%205-orange)](https://docs.bepinex.dev/) [![Version](https://img.shields.io/badge/Version-0.0.0-green)]() [![License](https://img.shields.io/badge/License-MIT-lightgrey)](LICENSE)
 
-**BepInEx plugin GUID:** `com.at747.repeattakeoffmusic`
 
-## Requirements
+BepInEx plugin that adjusts **per-aircraft takeoff music**: **once per local unit** (`persistentID`). Land → take off again in the **same** unit → no replay. **New** aircraft (new id) → one more takeoff theme.
 
-- Nuclear Option (Windows)
-- [BepInEx 5](https://docs.bepinex.dev/) (x64) with Harmony (bundled with typical installs)
+## Install
 
-## Build
+> [!IMPORTANT]
+> **BepInEx 5 (x64) required** - install [BepInEx](https://docs.bepinex.dev/) before this mod.
 
-1. Clone this repository.
-2. Ensure the game is installed at the default Steam path, **or** copy `Directory.Build.user.props.example` to `Directory.Build.user.props` in the **repository root** and set `NuclearOptionRoot` to your install folder.
+1. Build `RepeatTakeoffMusic_Engine` (Release) or copy `RepeatTakeoffMusic_Engine.dll` into `BepInEx/plugins/`.
+2. Ensure BepInEx 5 and Harmony are present (standard NO install).
 
-3. Open `RepeatTakeoffMusic.sln` in Visual Studio **or** run:
+Override game path: optional `Directory.Build.user.props` next to `Directory.Build.props`:
 
-```text
-msbuild RepeatTakeoffMusic\RepeatTakeoffMusic.csproj /p:Configuration=Release
+```xml
+<Project>
+  <PropertyGroup>
+    <NuclearOptionRoot>C:\Path\To\Nuclear Option</NuclearOptionRoot>
+  </PropertyGroup>
+</Project>
 ```
-
-4. Copy `RepeatTakeoffMusic\bin\Release\RepeatTakeoffMusic.dll` to the game’s `BepInEx\plugins\` folder.
-
-## Install (release DLL)
-
-1. Download `RepeatTakeoffMusic.dll` from the repository’s **Releases** page.
-2. Place it in `...\Nuclear Option\BepInEx\plugins\`.
 
 ## How it works
 
-Vanilla calls `MusicManager.CrossFadeMusic` from `Aircraft.CheckRadarAlt` with `allowReplay: false` for takeoff. This mod’s **Prefix** sets `allowReplay` to `true` only for the **first** matching `takeoffMusic` call on the current **`persistentID`**. When the local player controls a **different** unit id, the counter resets. `GameManager.SetupGame` resets everything for a new session.
+Vanilla calls `MusicManager.CrossFadeMusic` with `allowReplay: false` for takeoff. This mod’s **Prefix** sets `allowReplay` true once per local `persistentID`. See `CHANGELOG.md`.
 
 ## Behaviour notes (vanilla)
 
@@ -40,21 +36,21 @@ Vanilla calls `MusicManager.CrossFadeMusic` from `Aircraft.CheckRadarAlt` with `
 
 ## Config
 
-| Key | Default | Description |
-|-----|---------|-------------|
-| `General.Enabled` | `true` | Set `false` to disable the mod’s patching (vanilla behaviour). |
+- `General.Enabled` — default `true`. Set `false` to disable the mod’s patching (vanilla behaviour).
 
 ## Manual test checklist
 
-1. **Same aircraft, second takeoff:** land, take off again **without** switching planes — takeoff theme should **not** play again.
-2. **New spawn:** after you get a **new** aircraft (new unit id), first takeoff can play the theme again (gear down).
+1. **Same aircraft, second takeoff:** land, take off again without switching — takeoff theme should **not** play again.
+2. **New unit:** spawn a new aircraft — first takeoff can play the theme again (gear down).
 3. **Death:** confirm death sting / music still behaves normally.
-4. **Multiplayer:** only local `CrossFadeMusic` calls are affected; remote players are unchanged.
+4. **Multiplayer:** logic is unchanged for remote players; only local `CrossFadeMusic` calls are affected.
 
 ## Compatibility
 
-Patches `MusicManager.CrossFadeMusic(...)` and `GameManager.SetupGame`. Game updates that change these will require a mod update.
+Patches `MusicManager.CrossFadeMusic(...)` and `GameManager.SetupGame`.
 
-## License
+---
 
-[MIT](LICENSE)
+## Keywords
+
+nuclear-option, bepinex, harmony, mod, repeattakeoffmusic, csharp, unity
