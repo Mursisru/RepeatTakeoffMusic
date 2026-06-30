@@ -8,15 +8,12 @@
 ---
 
 ## Critical warnings
-
 > [!IMPORTANT]
 > **BepInEx 5 (x64) required** - install [BepInEx](https://docs.bepinex.dev/articles/user_guide/installation/index.html) and Harmony before this mod.
 
 > [!NOTE]
-> **Local aircraft only** - takeoff music replays once per `persistentID`; remote players unaffected.
-
-> [!NOTE]
-> **Gear must be deployed** - vanilla passes `null` music clip when gear is up (unchanged behavior).
+> - **Local aircraft only** - takeoff music replays once per `persistentID`; remote players unaffected.
+> - **Gear must be deployed** - vanilla passes `null` music clip when gear is up (unchanged behavior).
 
 BepInEx plugin that adjusts **per-aircraft takeoff music**: **once per local unit** (`persistentID`). Land → take off again in the **same** unit → no replay. **New** aircraft (new id) → one more takeoff theme.
 
